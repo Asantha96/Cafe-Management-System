@@ -1,8 +1,8 @@
 package com.asa.cafe.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 @NamedQuery(name = "User.findByEmailId", query = "SELECT u FROM User u WHERE u.email=:email")
@@ -30,4 +30,6 @@ public class User implements Serializable {
     private String password;
     private String status;
     private String role;
+
+
 }
