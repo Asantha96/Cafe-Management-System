@@ -9,7 +9,7 @@ import java.io.Serializable;
 @NamedQuery(name = "User.getAllUser", query = "SELECT NEW com.asa.cafe.wrapper.UserWrapper(u.id, u.name, u.email, u.contactNumber, u.status) FROM User u WHERE u.role='user' ")//by lombok allArgs constructor, this object will not identify
 @NamedQuery(name = "User.updateStatus", query = "UPDATE User u SET u.status=:status WHERE u.id=:id")
 
-
+@NamedQuery(name = "User.getAllAdmin", query = "SELECT u.email FROM User u WHERE u.role='admin' ")
 
 
 @Getter
