@@ -1,6 +1,5 @@
 package com.asa.cafe.utils;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
