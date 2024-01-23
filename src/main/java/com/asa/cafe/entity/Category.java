@@ -10,7 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@NamedQuery(name = "Category.getAllCategory", query = "SELECT c FROM Category c")//hql query
+@NamedQuery(name = "Category.getAllCategory", query = "SELECT c FROM Category c WHERE c.id IN (SELECT p.category FROM Product p WHERE p.status='true')")//hql query
 
 @Getter
 @Setter
@@ -30,4 +30,5 @@ public class Category implements Serializable {
     private Integer id;
 
     private String name;
+
 }
