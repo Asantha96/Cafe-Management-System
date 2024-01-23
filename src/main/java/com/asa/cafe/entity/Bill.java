@@ -11,6 +11,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 
+@NamedQuery(name = "Bill.getAllBills", query = "SELECT b FROM Bill b ORDER BY b.id DESC ")
+@NamedQuery(name = "Bill.getBillByUserName", query = "SELECT b FROM Bill b WHERE b.createdBy=:username ORDER BY b.id DESC ")
+
 @Getter
 @Setter
 @NoArgsConstructor
