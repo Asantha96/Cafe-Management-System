@@ -28,13 +28,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     Claims claims = null;
     private String userName = null;
-    @Override
+    /*@Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        if(httpServletRequest.getServletPath().matches("/user/login/|/user/forgotPassword|/user/signup")){
+
+        if(httpServletRequest.getServletPath().matches("/user/login|/user/forgotPassword|/user/signup")){
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         }else {
             String authorizationHeader = httpServletRequest.getHeader("Authorization");
-            String token = null;
+            String token = "";
 
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
                 token = authorizationHeader.substring(7);
@@ -44,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if(userName != null && SecurityContextHolder.getContext().getAuthentication()==null){
                 UserDetails userDetails = service.loadUserByUsername(userName);
-                if(jwtUtil.validToken(token, userDetails)){
+                if(jwtUtil.validateToken(token, userDetails)){
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(
@@ -56,7 +57,44 @@ public class JwtFilter extends OncePerRequestFilter {
 
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+
+    }*/
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        if (httpServletRequest.getServletPath().matches("/user/login|/user/forgotPassword|/user/signup")) {
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            return; // Return early if the path matches and no further processing is needed
+        }
+
+        String authorizationHeader = httpServletRequest.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+
+            if (!token.isEmpty()) { // Check if the token is not empty
+                String userName = jwtUtil.extractUsername(token);
+
+                if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = service.loadUserByUsername(userName);
+
+                    if (userDetails != null && jwtUtil.validateToken(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                        usernamePasswordAuthenticationToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
+                        );
+
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    }
+                }
+            }
+        }
+
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
+
 
     public boolean isAdmin(){
         return "admin".equalsIgnoreCase((String) claims.get("role"));

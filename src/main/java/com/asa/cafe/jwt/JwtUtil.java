@@ -16,29 +16,42 @@ public class JwtUtil {
     private String secret = "secret";
 
     private <T> T extractClaims(String token, Function<Claims,T> claimsResolver){
+        System.out.println("Token empty from extractClaims()"+token.isEmpty());
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+    public Claims extractAllClaims(String token){
+        //System.out.println("Token empty from extractAllClaims()"+token.isEmpty());
+        Claims body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return body;
+    }
+
     public String extractUsername(String token) {
+        //System.out.println("Token empty from extractUsername()"+token.isEmpty());
+
         return extractClaims(token, Claims::getSubject);
     }
 
     public Date extractExpiration(String token){
+        //System.out.println("Token empty from extractExpiration()"+token.isEmpty());
+
         return extractClaims(token, Claims::getExpiration);
     }
     private Boolean isTokenExpired(String token){
+        //System.out.println("Token empty from isTokenExpired()"+token.isEmpty());
+
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validToken(String token, UserDetails userDetails){
+    public Boolean validateToken(String token, UserDetails userDetails){
+        //System.out.println("Token empty from validateToken()"+token.isEmpty());
+
         final String username = extractUsername(token);
         return ( username.equals(userDetails.getUsername()) && !isTokenExpired(token) );
     }
 
-    public Claims extractAllClaims(String token){
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-    }
+
 
     private String createToken(Map<String, Object> claims, String subject){
         return Jwts.builder()
