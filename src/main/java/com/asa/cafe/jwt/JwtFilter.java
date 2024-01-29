@@ -73,7 +73,7 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authorizationHeader.substring(7);
 
             if (!token.isEmpty()) { // Check if the token is not empty
-                String userName = jwtUtil.extractUsername(token);
+                userName = jwtUtil.extractUsername(token);
 
                 if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = service.loadUserByUsername(userName);
@@ -94,7 +94,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
-
 
     public boolean isAdmin(){
         return "admin".equalsIgnoreCase((String) claims.get("role"));

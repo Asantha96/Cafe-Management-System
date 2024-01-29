@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
         try{
             User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
-            if(!userObj.equals(null)){
+            if(userObj != null){
                 if(userObj.getPassword().equals(requestMap.get("oldPassword"))){
                     userObj.setPassword(requestMap.get("newPassword"));
                     userDao.save(userObj);//here only the password will be updated
@@ -191,6 +191,7 @@ public class UserServiceImpl implements UserService {
             exception.printStackTrace();
         }
         return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+
     }
 
     @Override
