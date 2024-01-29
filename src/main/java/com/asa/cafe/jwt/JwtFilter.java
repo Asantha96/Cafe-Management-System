@@ -74,7 +74,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (!token.isEmpty()) { // Check if the token is not empty
                 userName = jwtUtil.extractUsername(token);
-
+                claims = jwtUtil.extractAllClaims(token);
                 if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = service.loadUserByUsername(userName);
 
